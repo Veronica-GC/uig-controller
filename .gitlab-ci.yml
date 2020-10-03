@@ -4,6 +4,11 @@
 # https://github.com/gradle/gradle
 image: gradle:alpine
 
+stages:
+-build
+-test
+-deploy
+
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
@@ -23,13 +28,19 @@ build:
     paths:
       - build
       - .gradle
+  artifacts:
+    when: always
+    paths:
+      build/libs/*.jar
 
-test:
+test: all-test
   stage: test
-  script: gradle check
+  script: gradle test
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
       - build
       - .gradle
+    after_script:
+      - gradle jacocoTestReport
