@@ -8,3 +8,5 @@
  */
 
 rootProject.name = 'uig-controller'
+
+include 'uig-model'
